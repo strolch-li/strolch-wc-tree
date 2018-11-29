@@ -1,0 +1,81 @@
+<!-- Imports -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+
+<link rel="import" href="strolch-wc-tree-item.html">
+
+<dom-module id="strolch-wc-tree">
+    <template>
+
+        <!-- Style -->
+        <style is="custom-style">
+            :host {
+                @apply(--layout-vertical);
+            }
+
+        </style>
+
+        <!-- Requests -->
+
+        <!-- Content -->
+        <template is="dom-repeat" items="[[elements]]" as="element">
+            <strolch-wc-tree-item selected-item="{{selectedItem}}"
+                                  title-html="[[titleHtml]]"
+                                  func-obj="{{funcObj}}"
+                                  item="[[element]]" />
+        </template>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            /* Component */
+            is: "strolch-wc-tree",
+            behaviors: [],
+
+            /* Properties */
+            properties: {
+
+                selectedItem: {
+                    type: Object,
+                    value: null
+                },
+
+                titleHtml: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                },
+
+                elements: {
+                    type: Array
+                }
+            },
+
+            /* Computations */
+
+            /* Observers */
+            observers: [],
+
+            /* Listeners */
+            listeners: {
+                'strolch-wc-tree-item-selected': 'onItemSelected'
+            },
+
+            onItemSelected: function (e) {
+                if (this.selectedItem != null) {
+                    this.selectedItem.__selected = false;
+                }
+                this.selectedItem = e.detail.item;
+            }
+
+            /* Private */
+
+            /* Public */
+
+            /* Lifecycle */
+        });
+    </script>
+</dom-module>

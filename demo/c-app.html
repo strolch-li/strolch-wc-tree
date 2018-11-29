@@ -1,0 +1,142 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../../paper-card/paper-card.html">
+
+<link rel="import" href="../strolch-wc-tree.html">
+
+<dom-module id="c-app">
+
+    <template>
+
+        <style is="custom-styles">
+
+            :host {
+                @apply(--layout-horizontal);
+                @apply(--layout-start-aligned);
+            }
+
+            paper-card {
+                width: 50%;
+                margin: 16px;
+                padding: 16px;
+            }
+
+        </style>
+
+        <paper-card>
+
+            <strolch-wc-tree title-html func-obj="{{funcObj}}" elements="[[elements]]" />
+
+        </paper-card>
+
+        <paper-card class="item">
+
+            <template is="dom-if" if="[[!selectedItem]]">
+                <p class="g-center"><i>Select an item in the tree view</i></p>
+            </template>
+
+            <template is="dom-if" if="[[selectedItem]]">
+
+                <h3>[[selectedItem.name]]</h3>
+
+            </template>
+
+        </paper-card>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'c-app',
+
+            properties: {
+                selectedItem: {
+                    type: Object,
+                    value: null
+                },
+
+                elements: {
+                    type: Array
+                },
+
+                funcObj: {
+                    type: Object,
+                    value: null
+                }
+            },
+
+            listeners: {
+                'strolch-wc-tree-item-selected': 'onItemSelected'
+            },
+
+            onItemSelected: function (e) {
+                this.selectedItem = e.detail.item;
+            },
+
+            ready: function () {
+                var that = this;
+                this.funcObj = {
+                    getTitle: function (item) {
+                        return item == null ? "" : "<b>" + item.type + "</b>:&#9;&#9;" + item.name;
+                    },
+                    getIcon: function (item) {
+                        if (item == null || item.state == null || item.state == '') return '';
+                        return that.resolveUrl('icons/' + item.state + '.png');
+                    },
+                    hasElements: function (item) {
+                        return item != null && item.elements && item.elements.length > 0;
+                    },
+                    getElements: function (item) {
+                        return item == null ? [] : (item.elements ? item.elements : []);
+                    }
+                };
+
+                this.elements = [
+                    {
+                        name: "Activity 1",
+                        type: "FromStock",
+                        state: "Execution",
+                        elements: [
+                            {
+                                name: "Action 1",
+                                type: "FromStock",
+                                state: "Executed"
+                            },
+                            {
+                                name: "Sub Activity 2",
+                                type: "FromStock",
+                                state: "Execution",
+                                elements: [
+                                    {
+                                        name: "Sub Action 1",
+                                        type: "FromStock",
+                                        state: "Execution"
+                                    },
+                                    {
+                                        name: "Sub Action 2",
+                                        type: "FromStock",
+                                        state: "Created"
+                                    }
+                                ]
+                            },
+                            {
+                                name: "Action 3",
+                                type: "FromStock",
+                                state: "Created"
+                            }
+                        ]
+                    },
+                    {
+                        name: "Activity 2",
+                        type: "ToStock",
+                        state: "Error"
+                    }
+                ]
+            },
+        });
+
+    </script>
+
+</dom-module>

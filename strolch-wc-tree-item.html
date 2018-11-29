@@ -1,0 +1,174 @@
+<!-- Imports -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+
+<link rel="import" href="strolch-wc-tree-svg.html">
+
+<dom-module id="strolch-wc-tree-item">
+    <template>
+
+        <!-- Style -->
+        <style is="custom-style">
+            :host {
+                @apply(--layout-horizontal);
+                width: 100%;
+            }
+
+            .tree-item {
+                width: calc(100% - 24px);
+            }
+
+            .child-item {
+                margin-left: 24px;
+            }
+
+            .item {
+                line-height: 24px;
+                margin: 0;
+            }
+
+            .expandIcon {
+                cursor: pointer;
+            }
+
+            .icon {
+                height: 24px;
+                line-height: 24px;
+                margin-bottom: -4px;
+            }
+
+            .icon-img {
+                margin-bottom: -4px;
+            }
+
+            .title {
+                line-height: 24px;
+                cursor: pointer;
+            }
+
+            .selected {
+                background-color: #c8c8c8;
+            }
+
+        </style>
+
+        <!-- Requests -->
+
+        <!-- Content -->
+        <div class="tree-item">
+            <p class$="[[itemClass]]">
+                <iron-icon class="expandIcon"
+                           icon="{{_getExpandedIcon(funcObj, item, expanded)}}"
+                           on-tap="onToggleExpand"></iron-icon>
+                <span class="icon" title="{{item.state}}"><img height="16"
+                                                               width="16"
+                                                               class="icon-img"
+                                                               src$="{{_getIcon(funcObj, item, expanded)}}" /></span>
+                <template is="dom-if" if="[[!titleHtml]]">
+                    <span class="title" on-tap="onTitleTapped">[[_getTitle(funcObj, item)]]</span>
+                </template>
+                <template is="dom-if" if="[[titleHtml]]">
+                    <span class="title" on-tap="onTitleTapped" inner-h-t-m-l="[[_getTitle(funcObj, item)]]"></span>
+                </template>
+            </p>
+
+            <template is="dom-if" if="{{expanded}}">
+                <template is="dom-repeat" items="[[_getElements(funcObj, item)]]" as="element">
+                    <strolch-wc-tree-item class="child-item"
+                                          selected-item="{{selectedItem}}"
+                                          title-html="[[titleHtml]]"
+                                          func-obj="{{funcObj}}"
+                                          item="[[element]]" />
+                </template>
+            </template>
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+
+            /* Component */
+            is: "strolch-wc-tree-item",
+            behaviors: [],
+
+            /* Properties */
+            properties: {
+
+                itemClass: {
+                    type: String,
+                    value: 'item'
+                },
+
+                titleHtml: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                },
+
+                item: {
+                    type: Object
+                },
+                expanded: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+
+            /* Computations */
+
+            /* Observers */
+            observers: [
+                'observeSelectedItem(selectedItem)'
+            ],
+            observeSelectedItem: function (selectedItem) {
+                if (selectedItem != this.item) {
+                    this.itemClass = 'item';
+                }
+            },
+            onToggleExpand: function (e) {
+                this.expanded = !this.expanded;
+            },
+            onTitleTapped: function (e) {
+                this.itemClass = 'item selected';
+                this.fire('strolch-wc-tree-item-selected', {
+                    rootItem: this.rootItem,
+                    item: this.item
+                });
+            },
+
+            /* Listeners */
+            listeners: {},
+
+            /* Private */
+            _getExpandedIcon: function (funcObj, item, expanded) {
+                if (item == null || funcObj == null || funcObj.getElements == null) return [];
+                if (!funcObj.hasElements(item)) {
+                    return '';
+                } else if (expanded) {
+                    return 'strolch-wc-inspector-svg:tree_arrow_down';
+                } else {
+                    return 'strolch-wc-inspector-svg:tree_arrow_right';
+                }
+            },
+            _getIcon: function (funcObj, item, expanded) {
+                if (item == null || funcObj == null || funcObj.getElements == null) return [];
+                return funcObj.getIcon(item);
+            },
+            _getTitle: function (funcObj, item) {
+                if (item == null || funcObj == null || funcObj.getTitle == null) return '';
+                return funcObj.getTitle(item);
+            },
+            _getElements: function (funcObj, item) {
+                if (item == null || funcObj == null || funcObj.getElements == null) return [];
+                return funcObj.getElements(item);
+            },
+
+            /* Public */
+
+            /* Lifecycle */
+
+        });
+    </script>
+</dom-module>
