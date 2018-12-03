@@ -108,7 +108,9 @@
                 },
 
                 item: {
-                    type: Object
+                    type: Object,
+                    value: null,
+                    observer: 'itemChanged'
                 },
                 expanded: {
                     type: Boolean,
@@ -122,6 +124,10 @@
             observers: [
                 'observeSelectedItem(selectedItem)'
             ],
+            itemChanged: function (newValue, oldValue) {
+                if (newValue == null || oldValue == null || newValue.locator != oldValue.locator)
+                    this.itemClass = 'item';
+            },
             observeSelectedItem: function (selectedItem) {
                 if (selectedItem != this.item) {
                     this.itemClass = 'item';
