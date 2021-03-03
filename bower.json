@@ -1,7 +1,7 @@
 {
   "name": "strolch-wc-tree",
   "description": "Strolch Tree View WebComponent",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "authors": ["Robert von Burg"],
   "keywords": [
     "strolch",
@@ -11,14 +11,14 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git@github.com:4treesCH/strolch-wc-tree.git"
+    "url": "git@github.com:strolch-li/strolch-wc-tree.git"
   },
-  "license": "https://github.com/4treesCH/strolch-wc-tree/blob/master/LICENSE",
-  "homepage": "https://github.com/4treesCH/strolch-wc-tree",
+  "license": "https://github.com/strolch-li/strolch-wc-tree/blob/master/LICENSE",
+  "homepage": "https://github.com/strolch-li/strolch-wc-tree",
   "ignore": [],
   "dependencies": {
-    "strolchjs": "4treesCH/strolchjs#^0.4.2",
-    "strolch-wc-styles": "4treesCH/strolch-wc-styles#^0.3.0",
+    "strolchjs": "strolch-li/strolchjs#^0.4.3",
+    "strolch-wc-styles": "strolch-li/strolch-wc-styles#^0.3.1",
 
     "polymer": "Polymer/polymer#^1.11.3",
 
