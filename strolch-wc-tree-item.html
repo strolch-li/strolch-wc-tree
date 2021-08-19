@@ -16,6 +16,7 @@
             }
 
             .tree-item {
+                padding-top: 5px;
                 width: calc(100% - 24px);
             }
 
@@ -61,10 +62,14 @@
                 <iron-icon class="expandIcon"
                            icon="{{_getExpandedIcon(funcObj, item, expanded)}}"
                            on-tap="onToggleExpand"></iron-icon>
-                <span class="icon" title="{{item.state}}"><img height="16"
-                                                               width="16"
-                                                               class="icon-img"
-                                                               src$="{{_getIcon(funcObj, item, expanded)}}" /></span>
+                <span class="icon" title="{{item.state}}">
+                    <template is="dom-if" if="[[_useIcon(funcObj, item)]]">
+                        <img height="16" width="16" class="icon-img" src$="[[_getIcon(funcObj, item)]]" />
+                    </template>
+                    <template is="dom-if" if="[[_useIronIcon(funcObj, item)]]">
+                        <iron-icon size="16" icon="{{_getIronIcon(funcObj, item)}}"></iron-icon>
+                    </template>
+                </span>
                 <template is="dom-if" if="[[!titleHtml]]">
                     <span class="title" on-tap="onTitleTapped">[[_getTitle(funcObj, item)]]</span>
                 </template>
@@ -79,7 +84,7 @@
                                           selected-item="{{selectedItem}}"
                                           title-html="[[titleHtml]]"
                                           func-obj="{{funcObj}}"
-                                          item="[[element]]" />
+                                          item="[[element]]"></strolch-wc-tree-item>
                 </template>
             </template>
         </div>
@@ -125,11 +130,11 @@
                 'observeSelectedItem(selectedItem)'
             ],
             itemChanged: function (newValue, oldValue) {
-                if (newValue == null || oldValue == null || newValue.locator != oldValue.locator)
+                if (newValue == null || oldValue == null || newValue.locator !== oldValue.locator)
                     this.itemClass = 'item';
             },
             observeSelectedItem: function (selectedItem) {
-                if (selectedItem != this.item) {
+                if (selectedItem !== this.item) {
                     this.itemClass = 'item';
                 }
             },
@@ -158,12 +163,24 @@
                     return 'strolch-wc-inspector-svg:tree_arrow_right';
                 }
             },
-            _getIcon: function (funcObj, item, expanded) {
-                if (item == null || funcObj == null || funcObj.getElements == null) return [];
+            _useIcon: function (funcObj, item) {
+                if (item == null || funcObj == null || funcObj.useIcon == null) return false;
+                return funcObj.useIcon(item);
+            },
+            _useIronIcon: function (funcObj, item) {
+                if (item == null || funcObj == null || funcObj.useIronIcon == null) return false;
+                return funcObj.useIronIcon(item);
+            },
+            _getIcon: function (funcObj, item) {
+                if (item == null || funcObj == null || funcObj.getIcon == null) return "?";
                 return funcObj.getIcon(item);
             },
+            _getIronIcon: function (funcObj, item) {
+                if (item == null || funcObj == null || funcObj.getIronIcon == null) return "";
+                return funcObj.getIronIcon(item);
+            },
             _getTitle: function (funcObj, item) {
-                if (item == null || funcObj == null || funcObj.getTitle == null) return '';
+                if (item == null || funcObj == null || funcObj.getTitle == null) return "";
                 return funcObj.getTitle(item);
             },
             _getElements: function (funcObj, item) {

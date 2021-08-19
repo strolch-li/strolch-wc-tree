@@ -1,7 +1,7 @@
 {
   "name": "strolch-wc-tree",
   "description": "Strolch Tree View WebComponent",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "authors": ["Robert von Burg"],
   "keywords": [
     "strolch",
