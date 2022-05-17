@@ -16,7 +16,6 @@
             }
 
             .tree-item {
-                padding-top: 5px;
                 width: calc(100% - 24px);
             }
 
@@ -27,6 +26,9 @@
             .item {
                 line-height: 24px;
                 margin: 0;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                cursor: pointer;
             }
 
             .expandIcon {
@@ -37,6 +39,7 @@
                 height: 24px;
                 line-height: 24px;
                 margin-bottom: -4px;
+                margin-right: 5px;
             }
 
             .icon-img {
@@ -45,11 +48,23 @@
 
             .title {
                 line-height: 24px;
-                cursor: pointer;
             }
 
             .selected {
                 background-color: #c8c8c8;
+            }
+
+            .item:hover {
+                background-color: #c8c8c8;
+            }
+
+            .disabled {
+                color: darkgrey;
+                font-style: italic;
+            }
+
+            .disabled:hover {
+                background-color: inherit;
             }
 
         </style>
@@ -58,23 +73,23 @@
 
         <!-- Content -->
         <div class="tree-item">
-            <p class$="[[itemClass]]">
+            <p class$="[[itemClass]]" on-tap="onTitleTapped">
                 <iron-icon class="expandIcon"
                            icon="{{_getExpandedIcon(funcObj, item, expanded)}}"
                            on-tap="onToggleExpand"></iron-icon>
                 <span class="icon" title="{{item.state}}">
                     <template is="dom-if" if="[[_useIcon(funcObj, item)]]">
-                        <img height="16" width="16" class="icon-img" src$="[[_getIcon(funcObj, item)]]" />
+                        <img height="16" width="16" class="icon-img" src$="[[_getIcon(funcObj, item)]]"/>
                     </template>
                     <template is="dom-if" if="[[_useIronIcon(funcObj, item)]]">
                         <iron-icon size="16" icon="{{_getIronIcon(funcObj, item)}}"></iron-icon>
                     </template>
                 </span>
                 <template is="dom-if" if="[[!titleHtml]]">
-                    <span class="title" on-tap="onTitleTapped">[[_getTitle(funcObj, item)]]</span>
+                    <span class="title">[[_getTitle(funcObj, item)]]</span>
                 </template>
                 <template is="dom-if" if="[[titleHtml]]">
-                    <span class="title" on-tap="onTitleTapped" inner-h-t-m-l="[[_getTitle(funcObj, item)]]"></span>
+                    <span class="title" inner-h-t-m-l="[[_getTitle(funcObj, item)]]"></span>
                 </template>
             </p>
 
@@ -103,7 +118,7 @@
 
                 itemClass: {
                     type: String,
-                    value: 'item'
+                    computed: "computeItemClass(item, selected)"
                 },
 
                 titleHtml: {
@@ -117,6 +132,10 @@
                     value: null,
                     observer: 'itemChanged'
                 },
+                selected: {
+                    type: Boolean,
+                    value: false
+                },
                 expanded: {
                     type: Boolean,
                     value: false
@@ -124,25 +143,43 @@
             },
 
             /* Computations */
+            computeItemClass: function (item, selected) {
+                var itemClass = selected ? "item selected" : "item";
+                if (item.selectable != null && item.selectable === false)
+                    itemClass = itemClass + " disabled";
+                return itemClass;
+            },
 
             /* Observers */
             observers: [
                 'observeSelectedItem(selectedItem)'
             ],
             itemChanged: function (newValue, oldValue) {
-                if (newValue == null || oldValue == null || newValue.locator !== oldValue.locator)
-                    this.itemClass = 'item';
+                if (newValue == null) {
+                    this.selected = false;
+                    return;
+                }
+
+                var isDifferentItem = oldValue == null || newValue.locator !== oldValue.locator;
+                if (isDifferentItem)
+                    this.selected = false;
+
+                if (newValue.expand)
+                    this.expanded = true;
             },
             observeSelectedItem: function (selectedItem) {
-                if (selectedItem !== this.item) {
-                    this.itemClass = 'item';
-                }
+                if (selectedItem !== this.item)
+                    this.selected = false;
             },
             onToggleExpand: function (e) {
                 this.expanded = !this.expanded;
             },
             onTitleTapped: function (e) {
-                this.itemClass = 'item selected';
+                if (this.item.selectable != null && this.item.selectable === false)
+                    return;
+
+                this.selected = true;
+                this.itemClass = "item selected";
                 this.fire('strolch-wc-tree-item-selected', {
                     rootItem: this.rootItem,
                     item: this.item
