@@ -145,7 +145,7 @@
             /* Computations */
             computeItemClass: function (item, selected) {
                 var itemClass = selected ? "item selected" : "item";
-                if (item.selectable != null && item.selectable === false)
+                if (item.disabled)
                     itemClass = itemClass + " disabled";
                 return itemClass;
             },
@@ -175,7 +175,7 @@
                 this.expanded = !this.expanded;
             },
             onTitleTapped: function (e) {
-                if (this.item.selectable != null && this.item.selectable === false)
+                if (this.item.disabled)
                     return;
 
                 this.selected = true;
