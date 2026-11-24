@@ -1,7 +1,7 @@
 {
   "name": "strolch-wc-tree",
   "description": "Strolch Tree View WebComponent",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "authors": [
     "Robert von Burg"
   ],
@@ -19,11 +19,11 @@
   "homepage": "https://github.com/strolch-li/strolch-wc-tree",
   "ignore": [],
   "dependencies": {
-    "strolchjs": "strolch-li/strolchjs#^0.5.8",
-    "strolch-wc-styles": "strolch-li/strolch-wc-styles#^0.4.9",
-    "polymer": "Polymer/polymer#^1.12.0",
-    "iron-icons": "PolymerElements/iron-icons#^1.2.1",
-    "paper-styles": "PolymerElements/paper-styles#^1.3.1"
+    "strolchjs": "git@github.com:strolch-li/strolchjs#0.5.8",
+    "strolch-wc-styles": "git@github.com:strolch-li/strolch-wc-styles#0.4.9",
+    "polymer": "git@github.com:Polymer/polymer#1.12.0",
+    "iron-icons": "git@github.com:PolymerElements/iron-icons#1.2.1",
+    "paper-styles": "git@github.com:PolymerElements/paper-styles#1.3.1"
   },
   "devDependencies": {}
 }
